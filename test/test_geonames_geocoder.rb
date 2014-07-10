@@ -26,6 +26,19 @@ class GeonamesGeocoderTest < BaseGeocoderTest #:nodoc: all
       assert_url url
       assert_equal res.country_code, 'AU'
       assert_equal res.state, 'South Australia'
+      assert_equal res.state_code, 'SA'
+      assert_equal res.city, 'Adelaide'
+    end
+  end
+
+  def test_geonames_geocode_premium
+    # note this test will not actually return results because a valid premium 
+    # username is required so we are just testing if the url is correct
+    Geokit::Geocoders::GeonamesGeocoder.premium = true
+    VCR.use_cassette('geonames_geocode_premium') do
+      url = "http://ws.geonames.net/postalCodeSearch?placename=#{@city}&maxRows=10&username=demo"
+      res = Geokit::Geocoders::GeonamesGeocoder.geocode(@city)
+      assert_url url
       assert_equal res.city, 'Adelaide'
     end
   end
@@ -40,5 +53,4 @@ class GeonamesGeocoderTest < BaseGeocoderTest #:nodoc: all
       assert_url url
     end
   end
-
 end
